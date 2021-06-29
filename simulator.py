@@ -31,13 +31,6 @@ fig, ax = plt.subplots()
 
 
 def monteCarlo(values, numDays):
-    dayPrice = values.copy()
-    dayPrice.insert(0, 0)
-    div = [i / j for i, j in zip(dayPrice, values)]
-    div = div[1:]
-    periodicDailyReturn = np.log(div)
-    drift = np.average(periodicDailyReturn) - \
-        (stat.variance(periodicDailyReturn)/2)
     newValues = []
     for i in range(numDays+1):
         randomVal = stat.stdev(periodicDailyReturn) * \
@@ -58,6 +51,15 @@ showAveragePrediction = False
 
 approxDates = np.arange(date2[-1], date2[-1]+numDays + 1, 1)
 averageApproxValues = []
+
+dayPrice = closingPrice.copy()
+dayPrice.insert(0, 0)
+div = [i / j for i, j in zip(dayPrice, closingPrice)]
+div = div[1:]
+periodicDailyReturn = np.log(div)
+drift = np.average(periodicDailyReturn) - \
+    (stat.variance(periodicDailyReturn)/2)
+
 for i in range(numSimulations+1):
     approxValue = monteCarlo(closingPrice.copy(), numDays)
     if showAveragePrediction:
